@@ -1,9 +1,10 @@
-import IndexView from '@/sections/index/view/index-view';
 import React from 'react';
 
 const page = () => {
     return (
-      <IndexView/> 
+        <div>
+            login
+        </div>
     );
 };
 
