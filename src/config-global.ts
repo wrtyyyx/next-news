@@ -61,9 +61,9 @@ export const CONFIG: ConfigValue = {
     redirectPath: '/dashboard',
   },
 
-  newsdata: {
-    apiKey: process.env.NEXT_PUBLIC_NEWSDATA_API_KEY ?? '',
-    baseUrl: process.env.NEXT_PUBLIC_NEWSDATA_BASE_URL ?? 'https://newsdata.io/api/1',
+   newsdata: {
+    apiKey: process.env.NEXT_PUBLIC_NEWSDATA_API_KEY || '',
+    baseUrl: process.env.NEXT_PUBLIC_NEWSDATA_BASE_URL || '',
   },
 
   mapbox: {

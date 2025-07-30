@@ -1,29 +1,51 @@
-"use client"
-import {Accordion, AccordionItem, Button} from "@heroui/react";
+// src/app/page.tsx  (или любой клиентский компонент)
+'use client'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react'
+import  { NewsDataItem } from '@/types/NewsDataItem'
+import NewsCard from '@/components/NewsCars'
 
+export default function IndexView() {
+  const [news, setNews] = useState<NewsDataItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-const IndexView = () => {
+  useEffect(() => {
+    fetch('/api/news')
+      .then(res => res.json())
+      .then(setNews)
+      .catch(() => setError('Не вдалося завантажити новини.'))
+      .finally(() => setLoading(false))
+  }, [])
 
-    const defaultContent =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-    return (
-         <Accordion selectionMode="multiple">
-      <AccordionItem key="1" aria-label="Accordion 1" title="Accordion 1">
-        {defaultContent}
-      </AccordionItem>
-      <AccordionItem key="2" aria-label="Accordion 2" title="Accordion 2">
-        {defaultContent}
-      </AccordionItem>
-      <AccordionItem key="3" aria-label="Accordion 3" title="Accordion 3">
-        {defaultContent}
-      </AccordionItem>
-    </Accordion>
-    );
-};
+  if (loading) {
+    return <p className="p-4 text-center">Завантаження новин…</p>
+  }
+  if (error) {
+    return <p className="p-4 text-center text-red-500">{error}</p>
+  }
 
-export default IndexView;
-
-
-
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">
+        Новини за {new Date().toLocaleDateString('uk-UA')}
+      </h1>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        
+       {news.length > 0 ? (
+          news.map((item) => (
+            <NewsCard
+              key={item._id}
+              title={item.title}
+              description={item.content}
+              author={item.author ?? 'Невідомий автор'}
+              pubDate={new Date(item.pubDate).toLocaleString('uk-UA')}
+            />
+          ))
+        ) : (
+          <p className="col-span-full text-center">Новин немає</p>
+        )}
+      </div>
+    </div>
+  )
+}
