@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { getDatabase } from '@/lib/mongodb'
 import type { NewsDataItem } from '@/types/NewsDataItem'
+import { log } from 'console'
 
 export async function getAllNews(): Promise<NewsDataItem[]> {
   const db = await getDatabase()
@@ -16,10 +17,10 @@ export async function getNewsById(id: string): Promise<NewsDataItem | null> {
   const db = await getDatabase()
   const col = db.collection<NewsDataItem>('news')
   const item = await col.findOne({ _id: new ObjectId(id) })
-  if (!item) return null
-  return { ...item, _id: item._id!.toString() }
+  return item
+    ? { ...item, _id: item!._id }
+    : null
 }
-
 export async function createNews(data: Omit<NewsDataItem, '_id'>): Promise<NewsDataItem> {
   const db = await getDatabase()
   const col = db.collection<NewsDataItem>('news')

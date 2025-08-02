@@ -1,24 +1,29 @@
 // src/lib/mongodb.ts
 import { MongoClient } from 'mongodb'
 
-const uri = process.env.NEXT_PUBLIC_MONGODB_URI
+const uri   = process.env.NEXT_PUBLIC_MONGODB_URI
 const dbName = process.env.NEXT_PUBLIC_MONGODB_DB
 
+if (!uri)   throw new Error('MONGODB_URI is not defined in .env.local')
+if (!dbName) throw new Error('MONGODB_DB is not defined in .env.local')
 
-if (!uri) throw new Error('Please define MONGODB_URI in .env.local')
-if (!dbName) throw new Error('Please define MONGODB_DB in .env.local')
+let client: MongoClient
+let clientPromise: Promise<MongoClient>
 
-let cachedClient: MongoClient | null = null
-
-export async function getMongoClient() {
-  if (cachedClient) return cachedClient
-  const client = new MongoClient(uri)
-  await client.connect()
-  cachedClient = client
-  return client
+if (process.env.NODE_ENV === 'development') {
+  if (!(global as any)._mongoClientPromise) {
+    client = new MongoClient(uri)
+    ;(global as any)._mongoClientPromise = client.connect()
+  }
+  clientPromise = (global as any)._mongoClientPromise
+} else {
+  client = new MongoClient(uri)
+  clientPromise = client.connect()
 }
 
+export default clientPromise
+
 export async function getDatabase() {
-  const client = await getMongoClient()
+  const client = await clientPromise
   return client.db(dbName)
 }

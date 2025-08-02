@@ -2,6 +2,8 @@
 import React from 'react';
 
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button} from "@heroui/react";
+import { signOut, useSession } from 'next-auth/react';
+import { log } from 'console';
 
 export const AcmeLogo = () => {
   return (
@@ -17,6 +19,11 @@ export const AcmeLogo = () => {
 };
 
 export default function Header() {
+
+  const session = useSession();
+console.log('Session data:', session);
+
+  console.log(session);
   return (
     <Navbar>
       <NavbarBrand>
@@ -29,11 +36,13 @@ export default function Header() {
             Home
           </Link>
         </NavbarItem>
-        <NavbarItem>
-          <Link href="/article">
-            Articles
-          </Link>
-        </NavbarItem>
+        {session.data?.user?.role === 'admin' && (
+          <NavbarItem>
+            <Link href="/create" color="foreground">
+              Create news
+            </Link>
+          </NavbarItem>
+        )}
         <NavbarItem>
           <Link color="foreground" href="#">
             Integrations
@@ -41,14 +50,17 @@ export default function Header() {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
+        {session.status === 'authenticated' ? (<><Link href="/profile">Profile</Link>
+        <Link  href='#' onClick={() => signOut({callbackUrl:"/"})}>Sign Out</Link></>) : (<>
+          <NavbarItem className="hidden lg:flex">
+            <Link href="api/auth/signin" >Sign In</Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Button as={Link} color="primary" href="/signup" variant="flat">
+              Sign Up
+            </Button>
+          </NavbarItem>
+        </>)}
       </NavbarContent>
     </Navbar>
   );

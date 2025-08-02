@@ -1,10 +1,9 @@
+import LoginView from '@/sections/auth/login/login-view';
 import React from 'react';
 
 const page = () => {
     return (
-        <div>
-            login
-        </div>
+        <LoginView />
     );
 };
 

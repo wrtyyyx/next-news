@@ -1,5 +1,7 @@
+import { ObjectId } from "bson";
+
 export interface NewsDataItem {
-    _id?: string; 
+    _id?: ObjectId | string; 
     title: string;
     content: string;
     author?: string[]; 

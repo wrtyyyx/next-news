@@ -9,5 +9,7 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [heroui()],
+  plugins: [heroui(),
+    require('@tailwindcss/line-clamp'),
+  ],
 }

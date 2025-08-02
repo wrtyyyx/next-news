@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react'
 import  { NewsDataItem } from '@/types/NewsDataItem'
 import NewsCard from '@/components/NewsCars'
+import Link from 'next/link'
 
 export default function IndexView() {
   const [news, setNews] = useState<NewsDataItem[]>([])
@@ -24,6 +25,7 @@ export default function IndexView() {
   if (error) {
     return <p className="p-4 text-center text-red-500">{error}</p>
   }
+  console.log(news)
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -34,13 +36,14 @@ export default function IndexView() {
         
        {news.length > 0 ? (
           news.map((item) => (
-            <NewsCard
-              key={item._id}
-              title={item.title}
-              description={item.content}
-              author={item.author ?? 'Невідомий автор'}
-              pubDate={new Date(item.pubDate).toLocaleString('uk-UA')}
-            />
+            <Link key={item._id} href={`/article/${item._id}`}>
+              <NewsCard
+                title={item.title}
+                content={item.content}
+                author={item.author ?? 'Невідомий автор'}
+                publishedAt={item.publishedAt}
+              />
+            </Link>
           ))
         ) : (
           <p className="col-span-full text-center">Новин немає</p>
