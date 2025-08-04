@@ -112,18 +112,4 @@ yarn start
 └── tsconfig.json
 ```
 
----
 
-## Authors
-
-- **Your Name** — [yourusername](https://github.com/yourusername)
-
----
-
-## License
-
-This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
-
-```
-::contentReference[oaicite:0]{index=0}
-```
