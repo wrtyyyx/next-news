@@ -1,11 +1,7 @@
-import React from 'react';
+import React from "react";
 
-const SessionProvider = ({ children } : { children: React.ReactNode }) => {
-    return (
-        <SessionProvider>
-          {children}
-        </SessionProvider>
-    );
+const SessionProvider = ({ children }: { children: React.ReactNode }) => {
+  return <SessionProvider>{children}</SessionProvider>;
 };
 
 export default SessionProvider;

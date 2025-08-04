@@ -1,9 +1,15 @@
 "use client";
-import React from 'react';
+import React from "react";
 
-import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button} from "@heroui/react";
-import { signOut, useSession } from 'next-auth/react';
-import { log } from 'console';
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  Button,
+} from "@heroui/react";
+import { signOut, useSession } from "next-auth/react";
 
 export const AcmeLogo = () => {
   return (
@@ -19,9 +25,8 @@ export const AcmeLogo = () => {
 };
 
 export default function Header() {
-
   const session = useSession();
-console.log('Session data:', session);
+  console.log("Session data:", session);
 
   console.log(session);
   return (
@@ -36,7 +41,7 @@ console.log('Session data:', session);
             Home
           </Link>
         </NavbarItem>
-        {session.data?.user?.role === 'admin' && (
+        {session.data?.user?.role === "admin" && (
           <NavbarItem>
             <Link href="/create" color="foreground">
               Create news
@@ -50,17 +55,25 @@ console.log('Session data:', session);
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        {session.status === 'authenticated' ? (<><Link href="/profile">Profile</Link>
-        <Link  href='#' onClick={() => signOut({callbackUrl:"/"})}>Sign Out</Link></>) : (<>
-          <NavbarItem className="hidden lg:flex">
-            <Link href="api/auth/signin" >Sign In</Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Button as={Link} color="primary" href="/signup" variant="flat">
-              Sign Up
-            </Button>
-          </NavbarItem>
-        </>)}
+        {session.status === "authenticated" ? (
+          <>
+            <Link href="/profile">Profile</Link>
+            <Link href="#" onClick={() => signOut({ callbackUrl: "/" })}>
+              Sign Out
+            </Link>
+          </>
+        ) : (
+          <>
+            <NavbarItem className="hidden lg:flex">
+              <Link href="/api/auth/signin">Sign In</Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Button as={Link} color="primary" href="/signup" variant="flat">
+                Sign Up
+              </Button>
+            </NavbarItem>
+          </>
+        )}
       </NavbarContent>
     </Navbar>
   );

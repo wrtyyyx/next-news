@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import React, { use, useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   Card,
   CardHeader,
   CardBody,
   Skeleton,
   Spinner,
-  CardFooter
-} from '@heroui/react';  // HeroUI-компоненты
-import { NewsDataItem } from '@/types/NewsDataItem';
-import { handleDelete } from '@/utils/article-methods';
-import { useSession } from 'next-auth/react';
+  CardFooter,
+} from "@heroui/react"; // HeroUI-компоненты
+import { NewsDataItem } from "@/types/NewsDataItem";
+import { handleDelete } from "@/utils/article-methods";
+import { useSession } from "next-auth/react";
 
 const ArticleView: React.FC = () => {
   const { slug } = useParams();
@@ -62,27 +62,44 @@ const ArticleView: React.FC = () => {
       <Skeleton isLoaded={!loading}>
         <Card>
           <CardHeader className="flex justify-between items-center">
-            <div className='text-2xl font-bold'>
+            <div className="text-2xl font-bold">
               {article?.title}
-              <div className='text-sm text-gray-500'>
-                Автор: {article?.author ? (Array.isArray(article.author) ? article.author.join(', ') : article.author) : 'Невідомий автор'}
+              <div className="text-sm text-gray-500">
+                Автор:{" "}
+                {article?.author
+                  ? Array.isArray(article.author)
+                    ? article.author.join(", ")
+                    : article.author
+                  : "Невідомий автор"}
               </div>
             </div>
 
-            <div className='text-sm text-gray-500'>
-              Опубліковано: {new Date(article!.publishedAt).toLocaleDateString()}
+            <div className="text-sm text-gray-500">
+              Опубліковано:{" "}
+              {new Date(article!.publishedAt).toLocaleDateString()}
             </div>
           </CardHeader>
           <CardBody>
             <div> Опис: {article?.content}</div>
           </CardBody>
-          {session.status === 'authenticated' && session.data?.user?.role === 'admin' && (<CardFooter className="flex justify-between">
-            <button className="mt-4 px-4 py-2 bg-red-600 flex justify-end text-white rounded" onClick={handleNews}>Delete</button>
-            <button className="mt-4 px-4 py-2 bg-blue-600 flex justify-end text-white rounded" onClick={() => router.push(`/edit/${slug}`)}>Edit</button>
-          </CardFooter>)}
-
+          {session.status === "authenticated" &&
+            session.data?.user?.role === "admin" && (
+              <CardFooter className="flex justify-between">
+                <button
+                  className="mt-4 px-4 py-2 bg-red-600 flex justify-end text-white rounded"
+                  onClick={handleNews}
+                >
+                  Delete
+                </button>
+                <button
+                  className="mt-4 px-4 py-2 bg-blue-600 flex justify-end text-white rounded"
+                  onClick={() => router.push(`/edit/${slug}`)}
+                >
+                  Edit
+                </button>
+              </CardFooter>
+            )}
         </Card>
-
       </Skeleton>
     </div>
   );

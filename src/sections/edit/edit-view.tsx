@@ -1,60 +1,62 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { NewsDataItem } from '@/types/NewsDataItem'
-import { Spinner } from '@heroui/react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { Inputs } from '@/types/Inputs'
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Spinner } from "@heroui/react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Inputs } from "@/types/Inputs";
+import { getArticleBySlug, updateArticle } from "@/utils/article-methods";
 
 export default function EditView() {
-  const { id } = useParams()
-  const router = useRouter()
+  const { id } = useParams();
+  const router = useRouter();
 
-  const [article, setArticle] = useState<NewsDataItem | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Inputs>()
+  } = useForm<Inputs>();
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       try {
-        setLoading(true)
-        const res = await fetch(`/api/news/${id}` )
-        if (!res.ok) throw new Error(`Error ${res.status}`)
-        const data: NewsDataItem = await res.json()
-        setArticle(data)
-        reset({ title: data.title, content: data.content })
+        setLoading(true);
+        const data = await getArticleBySlug(id);
+        if (!data) {
+          throw new Error("Article not found");
+        }
+        reset({ title: data.title, content: data.content });
       } catch (e: any) {
-        setError(e.message)
+        setError(e.message);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    })()
-  }, [id, reset])
+    })();
+  }, [id, reset]);
 
-  if (loading) return <div className="flex justify-center"><Spinner label="Loading…" /></div>
-  if (error) return <div className="text-red-600 p-4">Error: {error}</div>
+  if (loading)
+    return (
+      <div className="flex justify-center">
+        <Spinner label="Loading…" />
+      </div>
+    );
+  if (error) return <div className="text-red-600 p-4">Error: {error}</div>;
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const res = await fetch(`/api/news/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (!res.ok) throw new Error(`Error ${res.status}`)
-      router.push(`/article/${id}`)
+      await updateArticle(id, {
+        title: data.title,
+        content: data.content,
+      });
+      router.push(`/article/${id}`);
     } catch (e: any) {
-      setError(e.message)
+      setError(e.message);
     }
-  }
+  };
 
   return (
     <div className="max-w-xl mx-auto p-4">
@@ -63,18 +65,22 @@ export default function EditView() {
         <div>
           <label className="block mb-1">Title</label>
           <input
-            {...register('title', { required: 'Required' })}
+            {...register("title", { required: "Required" })}
             className="w-full border p-2 rounded"
           />
-          {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
+          {errors.title && (
+            <p className="text-red-500 text-sm">{errors.title.message}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1">Content</label>
           <textarea
-            {...register('content', { required: 'Required' })}
+            {...register("content", { required: "Required" })}
             className="w-full border p-2 rounded h-32"
           />
-          {errors.content && <p className="text-red-500 text-sm">{errors.content.message}</p>}
+          {errors.content && (
+            <p className="text-red-500 text-sm">{errors.content.message}</p>
+          )}
         </div>
         <button
           type="submit"
@@ -85,5 +91,5 @@ export default function EditView() {
       </form>
       {error && <div className="mt-4 text-red-600">Error: {error}</div>}
     </div>
-  )
+  );
 }
