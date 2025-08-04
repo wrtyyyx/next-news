@@ -3,12 +3,15 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { createArticle } from "@/utils/article-methods";
-import Inputs from "@/types/Inputs";
+import { NewsFormInputs, newsSchema } from "@/schemas/newsSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function CreateView() {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const { register, handleSubmit } = useForm<NewsFormInputs>({
+    resolver: zodResolver(newsSchema),
+  });
+  const onSubmit: SubmitHandler<NewsFormInputs> = (data) => {
     createArticle(data).then(() => {
       router.push("/");
     });

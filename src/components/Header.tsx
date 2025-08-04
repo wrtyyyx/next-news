@@ -32,8 +32,10 @@ export default function Header() {
   return (
     <Navbar>
       <NavbarBrand>
-        <AcmeLogo />
-        <p className="font-bold text-inherit">Newses news</p>
+        <Link href="/">
+          <AcmeLogo />
+          <p className="font-bold text-inherit">Newses news</p>
+        </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
@@ -58,14 +60,12 @@ export default function Header() {
         {session.status === "authenticated" ? (
           <>
             <Link href="/profile">Profile</Link>
-            <Link href="#" onClick={() => signOut({ callbackUrl: "/" })}>
-              Sign Out
-            </Link>
+            <Link onClick={() => signOut({ callbackUrl: "/" })}>Sign Out</Link>
           </>
         ) : (
           <>
             <NavbarItem className="hidden lg:flex">
-              <Link href="/api/auth/signin">Sign In</Link>
+              <Link href="/signin">Sign In</Link>
             </NavbarItem>
             <NavbarItem>
               <Button as={Link} color="primary" href="/signup" variant="flat">

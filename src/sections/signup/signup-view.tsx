@@ -1,34 +1,37 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { SignUpFormInputs, signUpSchema } from "@/schemas/signUpSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function SignUpView() {
-  const [errors, setErrors] = useState(null);
+  const [errors, setErrors] = useState<string | null>(null);
   const router = useRouter();
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit } = useForm<SignUpFormInputs>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
-      email: '',
-      password: '',
-      name: '',
+      email: "",
+      password: "",
+      name: "",
     },
   });
 
-  const onSubmit = async (data : { email: string; password: string; name: string; }) => {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
+  const onSubmit = async (data: SignUpFormInputs) => {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({...data, role: 'user'}),
+      body: JSON.stringify(data),
     });
 
     if (res.ok) {
-      router.push('/signin');
+      router.push("/signin");
     } else {
       const errorData = await res.json();
-      setErrors(errorData);
+      setErrors(errorData.message || "Registration failed");
     }
   };
 
@@ -55,7 +58,7 @@ export default function SignUpView() {
                 id="name"
                 type="text"
                 required
-                {...register('name')}
+                {...register("name")}
                 className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -70,7 +73,7 @@ export default function SignUpView() {
                 id="email"
                 type="email"
                 required
-                {...register('email')}
+                {...register("email")}
                 className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -85,7 +88,7 @@ export default function SignUpView() {
                 id="password"
                 type="password"
                 required
-                {...register('password')}
+                {...register("password")}
                 className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>

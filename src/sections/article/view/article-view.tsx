@@ -9,12 +9,12 @@ import {
   Skeleton,
   Spinner,
   CardFooter,
-} from "@heroui/react"; // HeroUI-компоненты
+} from "@heroui/react";
 import { NewsDataItem } from "@/types/NewsDataItem";
 import { handleDelete } from "@/utils/article-methods";
 import { useSession } from "next-auth/react";
 
-const ArticleView: React.FC = () => {
+const ArticleView = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState<NewsDataItem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -86,13 +86,13 @@ const ArticleView: React.FC = () => {
             session.data?.user?.role === "admin" && (
               <CardFooter className="flex justify-between">
                 <button
-                  className="mt-4 px-4 py-2 bg-red-600 flex justify-end text-white rounded"
+                  className="mt-4 px-4 py-2 bg-red-600 flex cursor-pointer justify-end text-white rounded"
                   onClick={handleNews}
                 >
                   Delete
                 </button>
                 <button
-                  className="mt-4 px-4 py-2 bg-blue-600 flex justify-end text-white rounded"
+                  className="mt-4 px-4 py-2 bg-blue-600 cursor-pointer flex justify-end text-white rounded"
                   onClick={() => router.push(`/edit/${slug}`)}
                 >
                   Edit

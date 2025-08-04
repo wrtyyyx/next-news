@@ -1,4 +1,5 @@
 import { userRegister } from "@/services/auth/sign-up";
+import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   const { email, password, name } = await request.json();
   if (!email || !password || !name) {
@@ -9,9 +10,15 @@ export async function POST(request: Request) {
 
   try {
     await userRegister(email, password, name, "user");
-    return new Response("User registered successfully", { status: 201 });
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    return new Response(errorMessage, { status: 500 });
+    return NextResponse.json(
+      { message: "User registered successfully" },
+      { status: 201 },
+    );
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json(
+      { message: msg || "Internal server error" },
+      { status: 409 },
+    );
   }
 }

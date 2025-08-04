@@ -1,11 +1,6 @@
 import { Card, CardHeader, CardBody } from "@heroui/react";
 
-export interface NewsCardProps {
-  title: string;
-  content: string;
-  publishedAt: string;
-  author?: string[] | string;
-}
+import { NewsCardProps } from "@/types/NewsCardProps";
 
 export default function NewsCard({
   title,

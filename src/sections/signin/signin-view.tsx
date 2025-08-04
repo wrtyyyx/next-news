@@ -1,28 +1,29 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import GoogleButton from "@/components/GoogleButton";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import type { RegisterInputs } from "@/types/Inputs";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Spinner } from "@heroui/react";
+import { LoginFormInputs, loginSchema } from "@/schemas/loginSchema";
 export default function SignInView() {
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit } = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
-  const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     setError(null);
     setLoading(true);
 
-    console.log("Submitting sign in with data:", data);
     const res = await signIn("credentials", {
       redirect: false,
       email: data.email,
